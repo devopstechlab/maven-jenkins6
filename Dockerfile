@@ -1,4 +1,4 @@
-FROM maven:3.8.4-openjdk-17 AS builder
+FROM maven:3.9.9-eclipse-temurin-11 AS builder
 
 WORKDIR /app
 
@@ -6,16 +6,13 @@ COPY . .
 
 RUN mvn package
 
-# Tomcat image for deployment
-
-FROM tomcat:9.0.56-jdk17-openjdk-slim
+# Tomcat Server Setup
+FROM tomcat:11.0.2-jdk21-temurin-noble
 
 WORKDIR /usr/local/tomcat/webapps
 
-# Copy the built WAR file from the Maven builder stage to the Tomcat webapps directory
 COPY --from=builder /app/webapp/target/*.war .
 
 EXPOSE 8080
 
-# Command to run Tomcat
 CMD ["catalina.sh", "run"]
